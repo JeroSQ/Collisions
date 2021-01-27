@@ -7,7 +7,7 @@ class Box(Scene):
         self.box = box
         self.particles = []
         self.dots = []
-        positions = [[i, j, 0.0] for j in range(-2,2) for i in range(-5, 5)]
+        positions = [[i+0.5, j+0.75, 0.0] for j in range(-3,4) for i in range(-6, 6)]
 
         for i in range(40):
             p = Particle(pos_in=np.array(positions[i]))
@@ -18,9 +18,12 @@ class Box(Scene):
 
         self.play(ShowCreation(box), *[ShowCreation(d) for d in self.dots], run_time=1)
         self.dt = 1 / 60
-        for _ in range(3600):
+        for frame in range(600):
             self.update()
-            self.play(*[ApplyMethod(d.move_to, p.pos) for d,p in zip(self.dots, self.particles)], run_time=self.dt)
+            for d, p in zip(self.dots, self.particles):
+                d.move_to(p.pos)
+            self.wait(self.dt)
+            print(frame)
 
     def update(self):
         for p in self.particles:
