@@ -18,12 +18,13 @@ class Box(Scene):
 
         self.play(ShowCreation(box), *[ShowCreation(d) for d in self.dots], run_time=1)
         self.dt = 1 / 60
-        for frame in range(600):
+        count_frames = 600
+        for frame in range(count_frames):
             self.update()
             for d, p in zip(self.dots, self.particles):
                 d.move_to(p.pos)
             self.wait(self.dt)
-            print(frame)
+            self.printProgressBar(frame, count_frames)
 
     def update(self):
         for p in self.particles:
@@ -115,12 +116,21 @@ class Box(Scene):
     def get_interpolation(self, p, t):
         return np.array([t * p.pf1[0] + (1 - t) * p.pf0[0], t * p.pf1[1] + (1 - t) * p.pf0[1], 0.0])
 
+    # Progress Bar function by Greenstick https://stackoverflow.com/a/34325723/14099362
+    def printProgressBar (self, iteration, total, prefix = 'Progress', suffix = 'Complete', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+        filledLength = int(length * iteration // total)
+        bar = fill * filledLength + '-' * (length - filledLength)
+        print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+        if iteration == total: 
+            print()
+
 class Particle():
     def __init__(self, pos_in=None, vel_in=None):
         random.seed()
         self.rad = random.uniform(0.05, 0.2)    
         self.pos = np.array([random.uniform(-5.0, 5.0), random.uniform(-2.5, 2.5), 0.0]) if pos_in is None else pos_in                         
-        self.vel = np.array([random.uniform(-2.5, 2.5), random.uniform(-2.5, 2.5), 0.0]) if vel_in is None else vel_in                               
+        self.vel = np.random.uniform(low=-2.5, high=2.5, size=(3,)) if vel_in is None else vel_in                               
         self.accel = np.array([0.0, 0.0, 0.0])                                  
         self.mass = self.rad*math.pi**2
         self.pf0 = np.copy(self.pos)
