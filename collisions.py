@@ -24,7 +24,7 @@ class Box(Scene):
             for d, p in zip(self.dots, self.particles):
                 d.move_to(p.pos)
             self.wait(self.dt)
-            self.printProgressBar(frame, count_frames)
+            self.printProgressBar(frame, count_frames - 1)
 
     def update(self):
         for p in self.particles:
